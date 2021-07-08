@@ -4,7 +4,7 @@ This repository contains the code associated with the MICCAI 2021 paper [Interpr
 ## Dependencies
 All packages required for running the code in the repository are listed in the file _requirements.txt_
 ## Data
-The above code uses data from the UK Biobank(UKB) repository. Due to the Material Transfer Agreement of UK Biobank, we can not share the data, but researchers can apply for access and subsidized fees are available.
+The code in this repository uses data downloaded from the UK Biobank(UKB). Due to the Material Transfer Agreement of UK Biobank, we can not share the data, but researchers can apply for access and subsidized fees are available.
 ## Code 
 **BagNet Model** - BagNet-33 model with the best validation performance is provided in _modelstore/bagnet33/UKB_genderNet_bagnet33_imagenet_098_0.835.hdf5_
 
