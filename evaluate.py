@@ -18,7 +18,6 @@ def get_true_labels_and_predictions(data, model, partition, labels, dnn_type=DEF
     preprocessing_function = get_preprocess_fn(dnn_type)
     
     print('Evaluating the model...')
-    #print(subtract_bg)
     
     y_true = []
     y_pred = []
@@ -47,7 +46,6 @@ def get_true_labels_and_predictions(data, model, partition, labels, dnn_type=DEF
             img = None
             raise NotImplementedError('Data can be UKB or kaggle')
         softmax_out = np.squeeze(model.predict(img))
-#         y_pred.append(softmax_out[labels[file_ID]])
         if num_classes > 1:  # p(y=1|x), the probability score from the MALE neuron
             y_pred.append(softmax_out[-1])  # p(y=1|x), the probability score from the MALE neuron
         else:

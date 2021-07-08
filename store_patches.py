@@ -67,8 +67,6 @@ def writerow(patch, attr):
 	patch.append()
 
 def get_models(model_filename, dnn_type='bagnet33'):
-	#dnn_type = 'bagnet33'
-	#model_filepath = get_model_path(dnn_type)
 	model_dir = '/gpfs01/berens/user/iilanchezian/Projects/UKbiobank/supervised/modelstore/%s/' % (dnn_type)
 	model_filepath = os.path.join(model_dir, model_filename)
 
@@ -159,6 +157,7 @@ def create_storage_hierarchy(data, labels, partition, data_dir,
 		                          preprocessing_function=preprocess_fn)    
 
 		# use BagNet to obtain a global decision for the image
+                #If using softmax instead of sigmoid 
 		# softmax_out = bagnet.predict(img)[0]
 		# gender_pred = np.argmax(softmax_out, axis=-1)
 
@@ -172,24 +171,26 @@ def create_storage_hierarchy(data, labels, partition, data_dir,
 		for i in range(features.shape[-2]): # heatmap.shape[0]
 			for j in range(features.shape[-1]): # heatmap.shape[1]
 				logits_ij = logit_machine.predict(features[:,:,i,j])[0]
-				# female_logit = logits_ij[0]
-				# male_logit = logits_ij[1]
 				logit = logits_ij[0]
 
+                                # If using softmax instead of sigmoid 
+				# female_logit = logits_ij[0]
+				# male_logit = logits_ij[1]
 				# softmax_op = lin_classifier.predict(features[:,:,i,j])[0]
 				# female_prob = softmax_op[0]
 				# male_prob = softmax_op[1]
+				# local_evidence_female = int(female_prob > 0.5)
+				# local_evidence_male = int(male_prob > 0.5)
 
 				prob = lin_classifier.predict(features[:,:,i,j])[0]
 
-				# local_evidence_female = int(female_prob > 0.5)
-				# local_evidence_male = int(male_prob > 0.5)
 
 				local_evidence_female = int(prob < 0.5)
 				local_evidence_male = int(prob >= 0.5)
 
 				patch_features[patch_idx, :] = features[:,:,i,j]
 
+                                # If using softmax instead of sigmoid 
 				# writerow(patch, {'filename':str(filename), 'global_index': patch_idx, 
 				# 				 'local_index':local_patch_idx, 'true_label':bool(gender), 
 				# 				 'predicted_label':bool(gender_pred),'female_logit':logits_ij[0], 

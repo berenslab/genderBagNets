@@ -23,7 +23,6 @@ def train(base_DNN_type=params.DEFAULT_DNN_TYPE, img_size=params.DEFAULT_IMG_SIZ
     
 	input_dims = (img_size, img_size)	
 	data, labels = get_dataset(train_ratio=train_ratio, val_ratio=val_ratio)
-	#undersampled_data, labels = get_dataset(train_ratio=train_ratio, val_ratio=val_ratio, undersampling_rate=0.05, oversampling_rate=None)
 
 	datagen = ImageDataGenerator(featurewise_center=False, samplewise_center=False, 
 	                             featurewise_std_normalization=False, samplewise_std_normalization=False,
@@ -39,13 +38,6 @@ def train(base_DNN_type=params.DEFAULT_DNN_TYPE, img_size=params.DEFAULT_IMG_SIZ
 
 	preprocessing_function = get_preprocess_fn(base_DNN_type)
         
-	#init_train_datagen = FundusDataGenerator(undersampled_data['train'], labels,
-	#                                    batch_size=batch_size, dim=input_dims, 
-	#                                    n_channels=num_channels, n_classes=params.NUM_CLASSES, shuffle=True,
-	#                                    data_aug=datagen, preprocessing_function=preprocessing_function,
-	#                                    subtract_bg=subtract_bg, kernel=kernel, kernel_size=kernel_size 
-	#                                   )
-
 
 	train_datagen = FundusDataGenerator(data['train'], labels,
 	                                    batch_size=batch_size, dim=input_dims, 
@@ -97,24 +89,16 @@ def train(base_DNN_type=params.DEFAULT_DNN_TYPE, img_size=params.DEFAULT_IMG_SIZ
 
 	fundus_model.compile(optimizer=adam, loss=BinaryCrossentropy(label_smoothing=label_smoothing), metrics=['acc'])
 	
-        #Train first with undersampling
 	history_2 = fundus_model.fit_generator(generator=train_datagen, validation_data=val_datagen,
 	                                       epochs=epochs, use_multiprocessing=True, workers=num_workers, verbose=1,	
 	                                       callbacks=callbacks_list, max_queue_size=max_queue_size, initial_epoch=0 
                                                #class_weight={0:0.04, 1:0.96}
 	                                      )
-        #Now with oversampling
-	#history_3 = fundus_model.fit_generator(generator=train_datagen, validation_data=val_datagen,
-	#                                       epochs=epochs-80, use_multiprocessing=True, workers=num_workers, verbose=1,	
-	#                                       callbacks=callbacks_list, max_queue_size=max_queue_size, initial_epoch=0 
-        #                                       #class_weight={0:0.04, 1:0.96}
-	#                                      )
 
         
 	del(fundus_model)
 	save_hist_path = paths.get_history_path(dnn_type=base_DNN_type)
 	plot_history([history_1, history_2], savepath=save_hist_path)
-	#evaluate_model(data, labels) -> to generate evaluation rpert from saved model
 
 
 if __name__=='__main__':
